@@ -3,49 +3,49 @@ import os
 
 def onCreate():
     try:
-        os.remove('Instituto.db')
+        os.remove('Empresa.db')
     except:
         print("No hay bbdd")
 
     try:
-        bbdd = connect("Instituto.db")
+        bbdd = connect("Empresa.db")
         cursor = bbdd.cursor()
         tablas = [
             """
-            CREATE TABLE IF NOT EXISTS "profesor" (
-                "id"	INTEGER,
-                "nif"	TEXT NOT NULL UNIQUE,
-                "nombre"	TEXT NOT NULL,
-                "especialidad"	TEXT NOT NULL,
-                "telefono"	INTEGER NOT NULL UNIQUE,
-                PRIMARY KEY("id" AUTOINCREMENT)
-            )
-            """,
-            """
-                CREATE TABLE IF NOT EXISTS "alumno" (
-                    "numMatricula"	INTEGER,
-                    "nombre"	TEXT NOT NULL,
-                    "fechaNac"	TEXT NOT NULL,
-                    "telefono"	INTEGER NOT NULL,
-                    PRIMARY KEY("numMatricula" AUTOINCREMENT)
-                )
-            """,
-            """
-                CREATE TABLE IF NOT EXISTS "asignatura" (
+                CREATE TABLE IF NOT EXISTS "region" (
                     "cod"	INTEGER,
                     "nombre"	TEXT NOT NULL,
-                    "codProfesor"	INTEGER NOT NULL,
-                    PRIMARY KEY("cod" AUTOINCREMENT),
-                    FOREIGN KEY("codProfesor") REFERENCES "profesor"("id")
+                    PRIMARY KEY("id" AUTOINCREMENT)
                 )
             """,
             """
-                CREATE TABLE IF NOT EXISTS "curso_escolar" (
-                    "codAlumno"	INTEGER,
-                    "codAsignatura"	INTEGER,
-                    PRIMARY KEY("codAlumno","codAsignatura"),
-                    FOREIGN KEY("codAlumno") REFERENCES "alumno"("numMatricula"),
-                    FOREIGN KEY("codAsignatura") REFERENCES "asignatura"("cod")
+                CREATE TABLE IF NOT EXISTS "provincia" (
+                    "cod"	INTEGER,
+                    "nombre"	TEXT NOT NULL,
+                    "codRegion"	INTEGER NOT NULL,
+                    PRIMARY KEY("cod" AUTOINCREMENT),
+                    FOREIGN KEY("codRegion") REFERENCES "region"("cod")
+                )
+            """,
+            """
+                CREATE TABLE IF NOT EXISTS "localidad" (
+                    "cod"	INTEGER,
+                    "nombre"	TEXT NOT NULL,
+                    "codProvincia"	INTEGER NOT NULL,
+                    PRIMARY KEY("cod" AUTOINCREMENT),
+                    FOREIGN KEY("codProvincia") REFERENCES "provincia"("cod")
+                )
+            """,
+            """
+                CREATE TABLE IF NOT EXISTS "empleado" (
+                    "cod"	INTEGER,
+                    "dni"   TEXT NOT NULL UNIQUE,
+                    "nombre"	TEXT NOT NULL,
+                    "telefono"	INTEGER NOT NULL UNIQUE,
+                    "salario"	INTEGER NOT NULL,
+                    "codLocalidad"	INTEGER,
+                    PRIMARY KEY("cod" AUTOINCREMENT),
+                    FOREIGN KEY("codLocalidad") REFERENCES "localidad"("cod")
                 )
             """
         ]
@@ -54,14 +54,11 @@ def onCreate():
 
         profesores = [
             """
-                INSERT INTO profesor (
-                    nif,
-                    nombre,
-                    especialidad,
-                    telefono
+                INSERT INTO region (
+                    nombre
                 )
                 VALUES
-                ("11111111P", "Persona1", "especialidad1", 111111111)
+                ("11111111P")
                 ;
             """
         ]
