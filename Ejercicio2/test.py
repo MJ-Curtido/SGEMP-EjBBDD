@@ -3,21 +3,14 @@ from ConexionDB import *
 
 onCreate()
 
-respuesta = "s"
+cont = 0
 
-while respuesta.__eq__("s"):
-    opcion = input("1. Insertar alumno\n2. Eliminar alumno\n3. Insertar profesor\n4. Eliminar profesor")
+while cont < 3:
+    eliminarEmpleado()
+    cont += 1
 
-    match opcion:
-        case "1":
-            insertarAlumno()
-        case "2":
-            eliminarAlumno()
-        case "3":
-            insertarProfesor()
-        case "4":
-            eliminarProfesor()
-        case _:
-            print("Respuesta no válida")
+cont = 0
 
-    respuesta = input("¿Desea continuar? (s/n)")
+while cont < 8:
+    insertarEmpleado()
+    cont += 1

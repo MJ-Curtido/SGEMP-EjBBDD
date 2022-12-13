@@ -15,7 +15,7 @@ def onCreate():
                 CREATE TABLE IF NOT EXISTS "region" (
                     "cod"	INTEGER,
                     "nombre"	TEXT NOT NULL,
-                    PRIMARY KEY("id" AUTOINCREMENT)
+                    PRIMARY KEY("cod" AUTOINCREMENT)
                 )
             """,
             """
@@ -52,79 +52,72 @@ def onCreate():
         for tabla in tablas:
             cursor.execute(tabla)
 
-        profesores = [
+        regiones = [
             """
                 INSERT INTO region (
                     nombre
                 )
                 VALUES
-                ("11111111P")
+                ("Region1")
                 ;
             """
         ]
-        for profe in profesores:
-            cursor.execute(profe)
+        for region in regiones:
+            cursor.execute(region)
 
-        asignaturas = [
+        provincias = [
             """
-                INSERT INTO asignatura (
+                INSERT INTO provincia (
                     nombre,
-                    codProfesor
+                    codRegion
                 )
                 VALUES
-                ("Nombre1", 1)
+                ("Provincia1", 1)
                 ;
             """
         ]
-        for asig in asignaturas:
-            cursor.execute(asig)
+        for provincia in provincias:
+            cursor.execute(provincia)
 
-        alumnos = [
+        localidades = [
             """
-                INSERT INTO alumno (
+                INSERT INTO localidad (
                     nombre,
-                    fechaNac,
-                    telefono
+                    codProvincia
                 )
                 VALUES
-                ("Nombre1", "1-1-2001", 111111111),
-                ("Nombre2", "2-2-2002", 222222222),
-                ("Nombre3", "3-3-2003", 333333333),
-                ("Nombre4", "4-4-2004", 444444444),
-                ("Nombre5", "5-5-2005", 555555555),
-                ("Nombre6", "6-6-2006", 666666666),
-                ("Nombre7", "7-7-2007", 777777777),
-                ("Nombre8", "8-8-2008", 888888888),
-                ("Nombre9", "9-9-2009", 999999999),
-                ("Nombre10", "10-10-2010", 101010101)
+                ("Localidad1", 1)
                 ;
             """
         ]
-        for alumno in alumnos:
-            cursor.execute(alumno)
+        for localidad in localidades:
+            cursor.execute(localidad)
 
-        cursos = [
+        empleados = [
             """
-                INSERT INTO curso_escolar (
-                    codAlumno,
-                    codAsignatura
+                INSERT INTO empleado (
+                    dni,
+                    nombre,
+                    telefono,
+                    salario,
+                    codLocalidad
                 )
                 VALUES
-                    (1, 1),
-                    (2, 1),
-                    (3, 1),
-                    (4, 1),
-                    (5, 1),
-                    (6, 1),
-                    (7, 1),
-                    (8, 1),
-                    (9, 1),
-                    (10, 1)
+                ("11111111P", "Nombre1", 111111111, 1, 1),
+                ("22222222P", "Nombre2", 222222222, 2, 2),
+                ("33333333P", "Nombre3", 333333333, 3, 3),
+                ("44444444P", "Nombre4", 444444444, 4, 4),
+                ("55555555P", "Nombre5", 555555555, 5, 5),
+                ("66666666P", "Nombre6", 666666666, 6, 6),
+                ("77777777P", "Nombre7", 777777777, 7, 7),
+                ("88888888P", "Nombre8", 888888888, 8, 8),
+                ("99999999P", "Nombre9", 999999999, 9, 9),
+                ("10101010P", "Nombre10", 101010101, 10, 10)
                 ;
             """
         ]
-        for curso in cursos:
-            cursor.execute(curso)
+        for empleado in empleados:
+            cursor.execute(empleado)
 
         bbdd.commit()
         print("bbdd creada correctamente")
@@ -133,101 +126,45 @@ def onCreate():
     finally:
         cursor.close()
 
-def numAlumnos():
-    bbdd = connect("Instituto.db")
-    cursor = bbdd.cursor()
-
-    cursor.execute("SELECT COUNT(numMatricula) FROM alumno;")
-    bbdd.commit()
-    return cursor.fetchone()[0]
-
-def insertarAlumno():
-    if numAlumnos() < 25:
-        try:
-            bbdd = connect("Instituto.db")
-            cursor = bbdd.cursor()
-
-            nombre = input("\nNombre:")
-            fechaNac = input("\nFecha de nacimiento:")
-            telefono = input("\nTeléfono:")
-
-            cursor.execute("INSERT INTO alumno (nombre, fechaNac, telefono) VALUES (?, ?, ?)", [nombre, fechaNac, telefono])
-
-            bbdd.commit()
-
-            print("Alumno insertado correctamente")
-        except Exception as error:
-            print("Error al insertar el alumno:", error)
-        finally:
-            cursor.close()
-    else:
-        print("No puedes introducir un alumno porque superaría el límite de la clase")
-
-def eliminarAlumno():
-    if numAlumnos() > 10:
-        try:
-            bbdd = connect("Instituto.db")
-            cursor = bbdd.cursor()
-
-            cursor.execute("SELECT * FROM alumno;")
-            alumnos = cursor.fetchall()
-
-            for numMatricula, nombre, fechaNac, telefono in alumnos:
-                print(numMatricula," - ", nombre, " - ", fechaNac, " - ", telefono)
-
-            codAlumno = input("\n\nNúmero de matrícula del alumno a eliminar: ")
-
-            cursor.execute("DELETE FROM alumno WHERE numMatricula = ?", [codAlumno])
-
-            bbdd.commit()
-
-            print("Alumno eliminado correctamente")
-        except Exception as error:
-            print("Ha ocurrido un fallo al eliminar el alumno: ", error)
-        finally:
-            cursor.close()
-    else:
-        print("No puedes eliminar un alumno porque superaría el límite de la clase")
-
-def insertarProfesor():
+def insertarEmpleado():
     try:
-        bbdd = connect("Instituto.db")
+        bbdd = connect("Empresa.db")
         cursor = bbdd.cursor()
 
-        nif = input("\nNIF:")
+        dni = input("\nDNI:")
         nombre = input("\nNombre:")
-        especialidad = input("\nEspecialidad:")
         telefono = input("\nTeléfono:")
+        salario = input("\nSalario:")
 
-        cursor.execute("INSERT INTO profesor (nif, nombre, especialidad, telefono) VALUES (?, ?, ?, ?)", [nif, nombre, especialidad, telefono])
+        cursor.execute("INSERT INTO empleado (dni, nombre, telefono, salario, codLocalidad) VALUES (?, ?, ?, ?, 1)", [dni, nombre, telefono, salario])
 
         bbdd.commit()
 
-        print("Profesor insertado correctamente")
+        print("Empleado insertado correctamente")
     except Exception as error:
-        print("Error al insertar el profesor: ", error)
+        print("Error al insertar el empleado:", error)
     finally:
         cursor.close()
 
-def eliminarProfesor():
+def eliminarEmpleado():
     try:
-        bbdd = connect("Instituto.db")
+        bbdd = connect("Empresa.db")
         cursor = bbdd.cursor()
 
-        cursor.execute("SELECT * FROM profesor;")
-        profesores = cursor.fetchall()
+        cursor.execute("SELECT * FROM empleado;")
+        empleados = cursor.fetchall()
 
-        for id, nif, nombre, especialidad, telefono in profesores:
-            print(id, " - ", nif, " - ", nombre, " - ", especialidad, " - ", telefono)
+        for cod, dni, nombre, telefono, salario, codLocalidad in empleados:
+            print(cod, " - ", dni, " - ", nombre, " - ", telefono, " - ", salario, " - ", codLocalidad)
 
-        codProfesor = input("\n\nNúmero de matrícula del profesor a eliminar: ")
+        codEmpleado = input("\n\nCódigo del empleado a eliminar: ")
 
-        cursor.execute("DELETE FROM profesor WHERE id = ?", [codProfesor])
+        cursor.execute("DELETE FROM empleado WHERE cod = ?", [codEmpleado])
 
         bbdd.commit()
 
-        print("Profesor eliminado correctamente")
+        print("Alumno eliminado correctamente")
     except Exception as error:
-        print("Ha ocurrido un fallo al eliminar el profesor: ", error)
+        print("Ha ocurrido un fallo al eliminar el alumno: ", error)
     finally:
         cursor.close()
